@@ -1,0 +1,87 @@
+#include "graphics.hpp"
+#include <time.h>
+#include <cstdlib>
+#include <vector>
+#include <math.h>
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+using namespace genv;
+using namespace std;
+
+const unsigned int XX = 120;
+const unsigned int YY = 120;
+float G = 6;
+bool bounce=true;
+
+class tile
+{
+    vector<vector<bool> > SideRGB;
+    bool IsStraight;
+    bool IsCurved;
+    public:
+    void setsideRGB(string colourcode)
+    {
+        SideRGB.resize(4);
+        for (int i=0;i<4;i++)
+        SideRGB[i].resize(3);
+        if(colourcode.length()==12)
+        {
+            int k=0;
+            for(int i=0; i<4;i++)
+            {
+                for(int j=0;j<3;j++)
+                {
+                if(colourcode[k]=='R' || colourcode[k]=='G' || colourcode[k]=='B')SideRGB[i][j]=true;
+                //cout<<SideRGB[i][j];
+                k++;
+                }
+            //cout<<endl;
+            }
+        }
+        else
+        cout<<"Fail";
+    }
+
+    void show()
+    {
+        canvas c;
+        c.open(100,100);
+        c.transparent(true);
+        for(int i=0; i<4;i++)
+        {   unsigned int x,y;
+            switch (i) {case 0: x=50;y=10;break;
+                        case 1: x=90;y=50;break;
+                        case 2: x=50;y=90;break;
+                        case 3: x=10;y=50;break;}
+            vector<int> colours (3,0);
+            for(int j=0; j<3;j++)
+            {
+                if(SideRGB[i][j]==true){colours[j]=255;/*cout<<true;*/}
+            }
+            //cout<<endl;
+            c<<color(colours[0],colours[1],colours[2]);///RaaaGaaaBaaa
+            c<<move_to(x,y);
+            c<<box(10,10);
+        }
+        gout<<stamp(c ,0,0);
+    }
+
+
+};
+
+int main()
+{
+    string colourcode;
+    cin>>colourcode;
+    tile csempecske;
+    gout.open(XX,YY);
+    csempecske.setsideRGB(colourcode);
+    csempecske.show();
+    gout<<refresh;
+    cin>>colourcode;
+        return 0;
+}
