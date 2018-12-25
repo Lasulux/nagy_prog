@@ -42,7 +42,7 @@ class tile
         cout<<"Fail";
     }
 
-    void show(int x, int y)
+    void show(int xf, int yf)
     {
         //ceil(meret);
         //if (meret<10)meret=10;if(meret>200)meret=200;
@@ -55,21 +55,22 @@ class tile
                         case 1: x=90;y=50;break;
                         case 2: x=50;y=90;break;
                         case 3: x=10;y=50;break;}*/
-            switch (i) {case 0: x=15;y=3;break;
-                        case 1: x=27;y=15;break;
-                        case 2: x=15;y=27;break;
-                        case 3: x=3;y=15;break;}
+            switch (i) {case 0: x=15;y=5;break;
+                        case 1: x=25;y=15;break;
+                        case 2: x=15;y=25;break;
+                        case 3: x=5;y=15;break;}
             vector<int> colours (3,0);
             for(int j=0; j<3;j++)
             {
                 if(SideRGB[i][j]==true){colours[j]=255;/*cout<<true;*/}
             }
             //cout<<endl;
-            c<<color(colours[0],colours[1],colours[2]);///RaaaGaaaBaaa
+            c<<color(colours[0],colours[1],colours[2]);///RaaaGaaaBaaa aGaaaaaGaaaa RGBaaaaaaRGB
             c<<move_to(x,y);
-            c<<box(3,3);
+            c<<box(5,5);
         }
-        gout<<stamp(c ,x,y);
+        xf=xf*30;yf=yf*30;
+        gout<<stamp(c ,xf,yf);
     }
 
 
@@ -80,16 +81,20 @@ vector<tile> alltiles;
 fragment(string input)
 {
     stringstream ss(input);
+    int i=0;
     while(!ss.eof())
     {
         string colourcode;
         ss>>colourcode;
         if( colourcode.length() == 12 ){
+        i++;
         tile csempecske;
         csempecske.setsideRGB(colourcode);
         alltiles.push_back(csempecske);
+        cout<<"Tile code: "<<colourcode<<" added."<<endl;
         }
     }
+    cout<<i<<" tiles added total."<<endl;
 }
 
 
@@ -101,6 +106,7 @@ int main()
     srand(time(0));
     event ev;
     gin.timer(30);
+    gout.open(XX,YY);
 
     string colourcode;
     bool show=false;
@@ -121,7 +127,7 @@ int main()
                 //if(show)csempecske.show(1,1);
                 for(int i=0;i<alltiles.size();i++)
                 {
-                    ///alltiles[i].show(1,1);
+                    alltiles[i].show(0,i);
                 }
                 gout<<refresh;
             }
