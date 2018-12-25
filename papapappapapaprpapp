@@ -42,7 +42,7 @@ class tile
         cout<<"Fail";
     }
 
-    void show(int xf, int yf)
+    void show(int yf, int xf)
     {
         //ceil(meret);
         //if (meret<10)meret=10;if(meret>200)meret=200;
@@ -70,7 +70,7 @@ class tile
             c<<box(5,5);
         }
         xf=xf*30;yf=yf*30;
-        gout<<stamp(c ,xf,yf);
+        gout<<stamp(c ,yf,xf);
     }
 
 
@@ -105,29 +105,29 @@ int main()
 
     srand(time(0));
     event ev;
-    gin.timer(30);
+    gin.timer(1000);
     gout.open(XX,YY);
 
     string colourcode;
     bool show=false;
-    label1:
-    /*cin>>colourcode;
-    if( colourcode.length() == 12 ){ gout.open(XX,YY);}
-    else if(colourcode=="esc")return 0;
-    else goto label1;
-    tile csempecske;
-    csempecske.setsideRGB(colourcode);
-    gout<<refresh;*/
 
     while (gin >> ev)
     {
         if (ev.type==ev_timer)
             {
                 gout<<color(0,0,0)<<move_to(0,0)<<box(XX,YY);
-                //if(show)csempecske.show(1,1);
-                for(int i=0;i<alltiles.size();i++)
+                if(show)
                 {
-                    alltiles[i].show(0,i);
+                    int j=0;
+                    int k=0;
+                    for(int i=0;i<alltiles.size();i++)
+                    {
+                        cout<<i<<"   "<<20*(j+1)<<"  "<<j<<endl;
+                        if(i>=20*(j+1))j++;
+                        if(i+k>=20)k-=20;
+                        //if(j>=20)break;
+                        alltiles[i].show(j,i+k);
+                    }
                 }
                 gout<<refresh;
             }
@@ -136,15 +136,16 @@ int main()
 
             if(ev.keycode == key_space)
             {
-                // cin>>colourcode;
-                //csempecske.setsideRGB(colourcode);
                 getline(cin,colourcode);
-                //if(colourcode==show)show=true;
                 fragment(colourcode);
             }
              if(ev.keycode == key_escape)
             {
                 return 0;
+            }
+            if(ev.keycode == key_right)
+            {
+                show=true;
             }
         }
     }
