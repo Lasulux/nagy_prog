@@ -1,0 +1,146 @@
+#include "graphics.hpp"
+#include <time.h>
+#include <cstdlib>
+#include <vector>
+#include <math.h>
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+using namespace genv;
+using namespace std;
+
+class tile
+{
+    vector<vector<bool> > SideRGB;
+    bool IsStraight;
+    bool IsCurved;
+    public:
+    void setsideRGB(string colourcode)
+    {
+        SideRGB.resize(4);
+        for (int i=0;i<4;i++)
+        SideRGB[i].resize(3);
+        if(colourcode.length()==12)
+        {
+            int k=0;
+            for(int i=0; i<4;i++)
+            {
+                for(int j=0;j<3;j++)
+                {
+                SideRGB[i][j]=false;
+                if(colourcode[k]=='R' || colourcode[k]=='G' || colourcode[k]=='B')SideRGB[i][j]=true;
+                //cout<<SideRGB[i][j];
+                k++;
+                }
+            //cout<<endl;
+            }
+        }
+        else
+        cout<<"Fail";
+    }
+
+    void show(int x, int y)
+    {
+        //ceil(meret);
+        //if (meret<10)meret=10;if(meret>200)meret=200;
+        canvas c;
+        c.open(30,30);
+        c.transparent(true);
+        for(int i=0; i<4;i++)
+        {   unsigned int x,y;
+            /*switch (i) {case 0: x=50;y=10;break;
+                        case 1: x=90;y=50;break;
+                        case 2: x=50;y=90;break;
+                        case 3: x=10;y=50;break;}*/
+            switch (i) {case 0: x=15;y=3;break;
+                        case 1: x=27;y=15;break;
+                        case 2: x=15;y=27;break;
+                        case 3: x=3;y=15;break;}
+            vector<int> colours (3,0);
+            for(int j=0; j<3;j++)
+            {
+                if(SideRGB[i][j]==true){colours[j]=255;/*cout<<true;*/}
+            }
+            //cout<<endl;
+            c<<color(colours[0],colours[1],colours[2]);///RaaaGaaaBaaa
+            c<<move_to(x,y);
+            c<<box(3,3);
+        }
+        gout<<stamp(c ,x,y);
+    }
+
+
+};
+
+vector<tile> alltiles;
+
+fragment(string input)
+{
+    stringstream ss(input);
+    while(!ss.eof())
+    {
+        string colourcode;
+        ss>>colourcode;
+        if( colourcode.length() == 12 ){
+        tile csempecske;
+        csempecske.setsideRGB(colourcode);
+        alltiles.push_back(csempecske);
+        }
+    }
+}
+
+
+int main()
+{
+    const unsigned int XX = 600;
+    const unsigned int YY = 600;
+
+    srand(time(0));
+    event ev;
+    gin.timer(30);
+
+    string colourcode;
+    bool show=false;
+    label1:
+    /*cin>>colourcode;
+    if( colourcode.length() == 12 ){ gout.open(XX,YY);}
+    else if(colourcode=="esc")return 0;
+    else goto label1;
+    tile csempecske;
+    csempecske.setsideRGB(colourcode);
+    gout<<refresh;*/
+
+    while (gin >> ev)
+    {
+        if (ev.type==ev_timer)
+            {
+                gout<<color(0,0,0)<<move_to(0,0)<<box(XX,YY);
+                //if(show)csempecske.show(1,1);
+                for(int i=0;i<alltiles.size();i++)
+                {
+                    ///alltiles[i].show(1,1);
+                }
+                gout<<refresh;
+            }
+    if (ev.type==ev_key)
+        {
+
+            if(ev.keycode == key_space)
+            {
+                // cin>>colourcode;
+                //csempecske.setsideRGB(colourcode);
+                getline(cin,colourcode);
+                //if(colourcode==show)show=true;
+                fragment(colourcode);
+            }
+             if(ev.keycode == key_escape)
+            {
+                return 0;
+            }
+        }
+    }
+        return 0;
+}
